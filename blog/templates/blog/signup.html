@@ -4,11 +4,16 @@
 
 <div class="col-sm-10">
     <h3 class="my-5">Become an author !</h3>
-    <form action="" method="post">
+    {% if messages %} 
+        {% for message in messages %} 
+            <p {% if message.tags %} class="alert alert-{{message.tags}} mb-5" {% endif %}>{{message}}</p>
+        {% endfor %}
+    {% endif %}
+    <form action="" method="post" novalidate>
         {% csrf_token %}
         {% for fm in form %}
             <div class="form-group">
-                {{fm.label_tag}} {{fm}} {{fm.errors|striptags}}
+                {{fm.label_tag}} {{fm}} <small class="text-warning">{{fm.errors|striptags}}</small>
             </div>
         {% endfor %}
         <input type="submit" value="Submit" class="btn btn-primary">

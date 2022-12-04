@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponseRedirect
 from .forms import SignUpForm, LoginForm
+from django.contrib import messages
 
 # home
 def home(request):
@@ -15,7 +16,13 @@ def dashboard(request):
 
 # signup
 def user_signup(request):
-    form = SignUpForm()
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            messages.success(request, 'Congratulations!! You have become an author. Log in to continue.')
+            form.save()
+    else:
+        form = SignUpForm()
     return render(request, 'blog/signup.html', {'form':form})
 
 # login
