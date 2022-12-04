@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponseRedirect
 from .forms import SignUpForm, LoginForm
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 
 # home
 def home(request):
@@ -27,8 +28,23 @@ def user_signup(request):
 
 # login
 def user_login(request):
-    form = LoginForm()
-    return render(request, 'blog/login.html', {'form':form})
+    if not request.user.is_authenticated: # if user is already not logged in
+        if request.method == "POST": 
+            form = LoginForm(request=request, data=request.POST)
+            if form.is_valid():
+                uname = form.cleaned_data['username']
+                upass = form.cleaned_data['password']
+                
+                user = authenticate(username=uname, password=upass)
+                if user is not None:
+                    login(request, user)
+                    messages.success(request, 'Logged in successfully !!')
+                    return HttpResponseRedirect('/dashboard/')
+        else: 
+            form = LoginForm()
+        return render(request, 'blog/login.html', {'form':form}) # load the login template
+    else:
+        return HttpResponseRedirect('/dashboard/')
 
 # logout
 def user_logout(request):
