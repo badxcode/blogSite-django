@@ -58,3 +58,24 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+# Add new post
+def add_post(request):
+    if request.user.is_authenticated:
+        return render(request, 'blog/addpost.html')
+    else:
+        return HttpResponseRedirect('/login/')
+
+# Update new post
+def update_post(request, id):
+    if request.user.is_authenticated:
+        return render(request, 'blog/updatepost.html')
+    else:
+        return HttpResponseRedirect('/login/')
+
+# Delete post
+def delete_post(request, id):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('/dashboard/')
+    else:
+        return HttpResponseRedirect('/login/')
