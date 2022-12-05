@@ -18,8 +18,11 @@ def contact(request):
 def dashboard(request):
     if request.user.is_authenticated:
         posts = Post.objects.all()
+        user = request.user
+        full_name = user.get_full_name()
+        gps = user.groups.all()
 
-        return render(request, 'blog/dashboard.html', {'posts':posts})
+        return render(request, 'blog/dashboard.html', {'posts':posts, 'full_name':full_name, 'groups':gps})
     else:
         return HttpResponseRedirect('/login/')
         
