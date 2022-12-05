@@ -2,10 +2,12 @@ from django.shortcuts import render, HttpResponseRedirect
 from .forms import SignUpForm, LoginForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from .models import Post
 
 # home
 def home(request):
-    return render(request, 'blog/home.html')
+    posts = Post.objects.all()
+    return render(request, 'blog/home.html', {'posts':posts})
 
 # contact
 def contact(request):
