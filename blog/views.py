@@ -3,6 +3,7 @@ from .forms import SignUpForm, LoginForm, PostForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .models import Post
+from django.contrib.auth.models import Group 
 
 # home
 def home(request):
@@ -29,7 +30,9 @@ def user_signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             messages.success(request, 'Congratulations!! You have become an author. Log in to continue.')
-            form.save()
+            user = form.save()
+            group = Group.objects.get(name='Author')
+            user.groups.add(group)
     else:
         form = SignUpForm()
     return render(request, 'blog/signup.html', {'form':form})
