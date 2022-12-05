@@ -76,10 +76,13 @@ def add_post(request):
     else:
         return HttpResponseRedirect('/login/')
 
-# Update new post
+# Update/Edit post
 def update_post(request, id):
     if request.user.is_authenticated:
-        return render(request, 'blog/updatepost.html')
+        if request.method == 'POST':
+            pi = Post.objects.get(pk=id)
+            form = Post
+        return render(request, 'blog/updatepost.html',{'form':form})
     else:
         return HttpResponseRedirect('/login/')
 
