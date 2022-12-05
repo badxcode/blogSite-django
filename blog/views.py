@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponseRedirect
-from .forms import SignUpForm, LoginForm
+from .forms import SignUpForm, LoginForm, PostForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .models import Post
@@ -62,7 +62,17 @@ def user_logout(request):
 # Add new post
 def add_post(request):
     if request.user.is_authenticated:
-        return render(request, 'blog/addpost.html')
+        if request.method == 'POST':
+            form = PostForm(request.POST)
+            if form.is_valid():
+                title = form.cleaned_data['title']
+                desc = form.cleaned_data['desc']
+                pst = Post(title=title, desc=desc)
+                pst.save()
+                form = PostForm()
+        else:
+            form = PostForm()
+        return render(request, 'blog/addpost.html', {'form':form})
     else:
         return HttpResponseRedirect('/login/')
 
