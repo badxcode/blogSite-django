@@ -81,7 +81,12 @@ def update_post(request, id):
     if request.user.is_authenticated:
         if request.method == 'POST':
             pi = Post.objects.get(pk=id)
-            form = Post
+            form = PostForm(request.POST, instance=pi)
+            if form.is_valid():
+                form.save()
+        else:
+            pi = Post.objects.get(pk=id)
+            form = PostForm(instance=pi)
         return render(request, 'blog/updatepost.html',{'form':form})
     else:
         return HttpResponseRedirect('/login/')
@@ -89,6 +94,9 @@ def update_post(request, id):
 # Delete post
 def delete_post(request, id):
     if request.user.is_authenticated:
-        return HttpResponseRedirect('/dashboard/')
+        if request.method == "POST":
+            pi = Post.objects.get(pk=id)
+            pi.delete()
+            return HttpResponseRedirect('/dashboard/')
     else:
         return HttpResponseRedirect('/login/')
